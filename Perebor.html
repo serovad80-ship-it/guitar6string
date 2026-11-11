@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Users/serov/Desktop/arpeggio_trainer.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Тренажёр гитарного перебора — Am / Dm / E</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #1e1e24;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    margin: 0;
+  }
+  h2 { margin: 0 0 10px 0; color: #ff5252; }
+  .mode-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-mode {
+    background: #2b2b36;
+    color: #bbb;
+    border: 2px solid #444;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-mode:hover { border-color: #ff5252; color: #fff; }
+  .btn-mode.active {
+    background: #ff5252;
+    color: #fff;
+    border-color: #ff5252;
+    box-shadow: 0 0 10px rgba(255,82,82,0.5);
+  }
+  .controls {
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #2b2b36;
+    padding: 8px 18px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-act {
+    background: #ff5252;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-act:hover { background: #ff7676; }
+  .btn-pause { background: #f39c12; }
+  .btn-pause:hover { background: #f1c40f; }
+  .btn-stop { background: #555; }
+  .btn-stop:hover { background: #777; }
+  .btn-loop.active { background: #00e676; color: #111; }
+  .diagram-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 20px 24px 20px;
+    max-width: 1140px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .active-fret { fill: #00e676 !important; stroke: #00b34a !important; filter: drop-shadow(0 0 8px #00e676); }
+  .active-tab { fill: #ff1744 !important; font-weight: bold; font-size: 13px; }
+  .info-bar {
+    font-size: 15px;
+    font-weight: bold;
+    color: #00e676;
+    min-width: 250px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+  <h2>Тренажёр гитарного перебора (шестёрка / восьмёрка)</h2>
+
+  <div class="mode-selector">
+    <button class="btn-mode" id="mode1Btn">1. Базовый уровень (Открытые аккорды)</button>
+    <button class="btn-mode active" id="mode2Btn">2. Продвинутый уровень (Баррэ V–VII лады)</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn-act" id="playBtn">▶ Проиграть</button>
+    <button class="btn-act btn-pause" id="pauseBtn">⏸ Пауза</button>
+    <button class="btn-act btn-stop" id="stopBtn">⏹ Стоп</button>
+    <button class="btn-act btn-loop" id="loopBtn">🔁 Повтор: Выкл</button>
+    <label>Темп (мс): <input type="range" id="speed" min="60" max="300" value="140"> <span id="msVal">140</span> мс</label>
+    <div class="info-bar" id="status">Остановлено (Режим 2)</div>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1060 360" width="100%">
+      <!-- Гриф гитары -->
+      <g transform="translate(60, 10)">
+        <text id="fretTitle" x="460" y="8" fill="#222" font-size="14" font-weight="bold" text-anchor="middle">Аппликатура аккорда: Ev7</text>
+        <g id="frets"><line x1="65" y1="20" x2="65" y2="170" stroke="#111" stroke-width="6"></line><line x1="167.22222222222223" y1="20" x2="167.22222222222223" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="269.44444444444446" y1="20" x2="269.44444444444446" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="371.6666666666667" y1="20" x2="371.6666666666667" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="473.8888888888889" y1="20" x2="473.8888888888889" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="576.1111111111111" y1="20" x2="576.1111111111111" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="678.3333333333334" y1="20" x2="678.3333333333334" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="780.5555555555557" y1="20" x2="780.5555555555557" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="882.7777777777778" y1="20" x2="882.7777777777778" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="985" y1="20" x2="985" y2="170" stroke="#777" stroke-width="2.8"></line></g>
+        <g id="inlays"><circle cx="320.55555555555554" cy="95" r="5.5" fill="#ddd"></circle><circle cx="525" cy="95" r="5.5" fill="#ddd"></circle><circle cx="729.4444444444446" cy="95" r="5.5" fill="#ddd"></circle><circle cx="933.8888888888889" cy="95" r="5.5" fill="#ddd"></circle></g>
+        <g id="strings" stroke="#555"><line x1="65" y1="20" x2="985" y2="20" stroke-width="1.2"></line><line x1="65" y1="50" x2="985" y2="50" stroke-width="1.5"></line><line x1="65" y1="80" x2="985" y2="80" stroke-width="1.8"></line><line x1="65" y1="110" x2="985" y2="110" stroke-width="2.2"></line><line x1="65" y1="140" x2="985" y2="140" stroke-width="2.6"></line><line x1="65" y1="170" x2="985" y2="170" stroke-width="3.2"></line></g>
+        <g id="fret-labels"><text x="30" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">0 лад</text><text x="116.11111111111111" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">1 лад</text><text x="218.33333333333334" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">2 лад</text><text x="320.55555555555554" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">3 лад</text><text x="422.7777777777778" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">4 лад</text><text x="525" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">5 лад</text><text x="627.2222222222222" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">6 лад</text><text x="729.4444444444446" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">7 лад</text><text x="831.6666666666667" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">8 лад</text><text x="933.8888888888889" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">9 лад</text></g>
+        <g id="string-labels" fill="#333" font-weight="bold" font-size="12"><text x="-40" y="24">1 (e)</text><text x="-40" y="54">2 (B)</text><text x="-40" y="84">3 (G)</text><text x="-40" y="114">4 (D)</text><text x="-40" y="144">5 (A)</text><text x="-40" y="174">6 (E)</text></g>
+        <g id="dots"><g><circle id="f-1-7" cx="729.4444444444446" cy="20" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="729.4444444444446" y="24" fill="white" font-size="11" font-weight="bold" text-anchor="middle">7</text></g><g><circle id="f-2-9" cx="933.8888888888889" cy="50" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="933.8888888888889" y="54" fill="white" font-size="11" font-weight="bold" text-anchor="middle">9</text></g><g><circle id="f-3-9" cx="933.8888888888889" cy="80" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="933.8888888888889" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle">9</text></g><g><circle id="f-4-9" cx="933.8888888888889" cy="110" r="10" fill="#ff5252" stroke="#333" stroke-width="2"></circle><text x="933.8888888888889" y="114" fill="white" font-size="11" font-weight="bold" text-anchor="middle">9</text></g><g><circle id="f-5-7" cx="729.4444444444446" cy="140" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="729.4444444444446" y="144" fill="white" font-size="11" font-weight="bold" text-anchor="middle">7</text></g></g>
+      </g>
+
+      <!-- Табулатура -->
+      <g transform="translate(60, 225)">
+        <g stroke="#ccc" stroke-width="1.2">
+          <line x1="0" y1="15" x2="980" y2="15"></line>
+          <line x1="0" y1="30" x2="980" y2="30"></line>
+          <line x1="0" y1="45" x2="980" y2="45"></line>
+          <line x1="0" y1="60" x2="980" y2="60"></line>
+          <line x1="0" y1="75" x2="980" y2="75"></line>
+          <line x1="0" y1="90" x2="980" y2="90"></line>
+        </g>
+        <text x="-35" y="35" font-weight="bold" font-size="12" fill="#555">T</text>
+        <text x="-35" y="55" font-weight="bold" font-size="12" fill="#555">A</text>
+        <text x="-35" y="75" font-weight="bold" font-size="12" fill="#555">B</text>
+        <g id="tab-render"><text x="20" y="4" fill="#ff5252" font-size="12" font-weight="bold">Amv5</text><text x="20" y="94" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-0" class="">5</text><text x="39.58333333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-1" class="">5</text><text x="59.166666666666664" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-2" class="">5</text><text x="78.75" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-3" class="">5</text><text x="98.33333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-4" class="">5</text><text x="117.91666666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-5" class="">5</text><text x="137.5" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-6" class="">7</text><text x="157.08333333333331" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-7" class="">5</text><text x="176.66666666666666" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-8" class="">5</text><text x="196.25" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-9" class="">5</text><text x="215.83333333333331" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-10" class="">5</text><text x="235.41666666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-11" class="">5</text><line x1="245.20833333333334" x2="245.20833333333334" y1="10" y2="95" stroke="#4a69bd" stroke-width="2"></line><text x="255" y="4" fill="#ff5252" font-size="12" font-weight="bold">Dmv5</text><text x="255" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-12" class="">5</text><text x="274.5833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-13" class="">7</text><text x="294.16666666666663" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-14" class="">6</text><text x="313.75" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-15" class="">5</text><text x="333.3333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-16" class="">6</text><text x="352.91666666666663" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-17" class="">7</text><text x="372.5" y="64" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-18" class="">7</text><text x="392.0833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-19" class="">7</text><text x="411.66666666666663" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-20" class="">6</text><text x="431.25" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-21" class="">5</text><text x="450.8333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-22" class="">6</text><text x="470.41666666666663" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-23" class="">7</text><line x1="480.2083333333333" x2="480.2083333333333" y1="10" y2="95" stroke="#4a69bd" stroke-width="2"></line><text x="490" y="4" fill="#ff5252" font-size="12" font-weight="bold">Ev7</text><text x="490" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-24" class="">7</text><text x="509.5833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-25" class="">9</text><text x="529.1666666666666" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-26" class="">9</text><text x="548.75" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-27" class="">7</text><text x="568.3333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-28" class="">9</text><text x="587.9166666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-29" class="">9</text><text x="607.5" y="64" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-30" class="">9</text><text x="627.0833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-31" class="">9</text><text x="646.6666666666666" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-32" class="">9</text><text x="666.25" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-33" class="">7</text><text x="685.8333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-34" class="">9</text><text x="705.4166666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-35" class="">9</text><line x1="715.2083333333334" x2="715.2083333333334" y1="10" y2="95" stroke="#4a69bd" stroke-width="2"></line><text x="725" y="4" fill="#ff5252" font-size="12" font-weight="bold">Amv5</text><text x="725" y="94" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-36" class="">5</text><text x="744.5833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-37" class="">5</text><text x="764.1666666666666" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-38" class="">5</text><text x="783.75" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-39" class="">5</text><text x="803.3333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-40" class="">5</text><text x="822.9166666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-41" class="">5</text><line x1="832.7083333333334" x2="832.7083333333334" y1="10" y2="95" stroke="#4a69bd" stroke-width="2"></line><text x="842.5" y="4" fill="#ff5252" font-size="12" font-weight="bold">Ev7</text><text x="842.5" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-42" class="">7</text><text x="862.0833333333333" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-43" class="">9</text><text x="881.6666666666666" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-44" class="">9</text><text x="901.25" y="19" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-45" class="">7</text><text x="920.8333333333333" y="34" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-46" class="">9</text><text x="940.4166666666666" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#444" id="tb-47" class="">9</text></g>
+      </g>
+    </svg>
+  </div>
+
+<script>
+const openFreqs = [329.63, 246.94, 196.00, 146.83, 110.00, 82.41];
+
+const openChords = {
+  "Am": { 1: 0, 2: 1, 3: 2, 4: 2, 5: 0, 6: null },
+  "Dm": { 1: 1, 2: 3, 3: 2, 4: 0, 5: null, 6: null },
+  "E":  { 1: 0, 2: 0, 3: 1, 4: 2, 5: 2, 6: 0 }
+};
+
+const barreChords = {
+  "Amv5": { 1: 5, 2: 5, 3: 5, 4: 7, 5: 7, 6: 5 },
+  "Dmv5": { 1: 5, 2: 6, 3: 7, 4: 7, 5: 5, 6: null },
+  "Ev7":  { 1: 7, 2: 9, 3: 9, 4: 9, 5: 7, 6: null }
+};
+
+const pattern12 = [5, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3];
+const patternDm12 = [4, 3, 2, 1, 2, 3, 5, 3, 2, 1, 2, 3];
+const patternE12  = [6, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3];
+const pattern6_Am = [5, 3, 2, 1, 2, 3];
+const pattern6_E  = [6, 3, 2, 1, 2, 3];
+
+const patternAmv5_12 = [6, 3, 2, 1, 2, 3, 5, 3, 2, 1, 2, 3];
+const patternDmv5_12 = [5, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3];
+const patternEv7_12  = [5, 3, 2, 1, 2, 3, 4, 3, 2, 1, 2, 3];
+const patternAmv5_6  = [6, 3, 2, 1, 2, 3];
+const patternEv7_6   = [5, 3, 2, 1, 2, 3];
+
+function buildSequence(mode) {
+  const seq = [];
+  if (mode === 1) {
+    const blocks = [
+      { name: "Am", p: pattern12 },
+      { name: "Dm", p: patternDm12 },
+      { name: "E",  p: patternE12 },
+      { name: "Am", p: pattern6_Am },
+      { name: "E",  p: pattern6_E }
+    ];
+    blocks.forEach((b, bIdx) => {
+      const chord = openChords[b.name];
+      b.p.forEach(str => {
+        seq.push({ block: bIdx + 1, chordName: b.name, s: str, f: chord[str], chordObj: chord });
+      });
+    });
+  } else {
+    const blocks = [
+      { name: "Amv5", p: patternAmv5_12 },
+      { name: "Dmv5", p: patternDmv5_12 },
+      { name: "Ev7",  p: patternEv7_12 },
+      { name: "Amv5", p: patternAmv5_6 },
+      { name: "Ev7",  p: patternEv7_6 }
+    ];
+    blocks.forEach((b, bIdx) => {
+      const chord = barreChords[b.name];
+      b.p.forEach(str => {
+        seq.push({ block: bIdx + 1, chordName: b.name, s: str, f: chord[str], chordObj: chord });
+      });
+    });
+  }
+  return seq;
+}
+
+const fretX = [30];
+const nutX = 65;
+fretX.push(nutX);
+const totalFretWidth = 920;
+for (let i = 1; i <= 9; i++) {
+  fretX.push(nutX + (i * (totalFretWidth / 9)));
+}
+
+function getFretX(f) {
+  if (f === 0) return 30;
+  return (fretX[f] + fretX[f + 1]) / 2;
+}
+
+function buildFretboard() {
+  const fretsG = document.getElementById("frets");
+  const inlaysG = document.getElementById("inlays");
+  const stringsG = document.getElementById("strings");
+  const fLabelsG = document.getElementById("fret-labels");
+  const sLabelsG = document.getElementById("string-labels");
+
+  fretsG.innerHTML = ""; inlaysG.innerHTML = ""; stringsG.innerHTML = "";
+  fLabelsG.innerHTML = ""; sLabelsG.innerHTML = "";
+
+  const nut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  nut.setAttribute("x1", fretX[1]); nut.setAttribute("y1", "20");
+  nut.setAttribute("x2", fretX[1]); nut.setAttribute("y2", "170");
+  nut.setAttribute("stroke", "#111"); nut.setAttribute("stroke-width", "6");
+  fretsG.appendChild(nut);
+
+  for (let i = 2; i <= 10; i++) {
+    const fl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    fl.setAttribute("x1", fretX[i]); fl.setAttribute("y1", "20");
+    fl.setAttribute("x2", fretX[i]); fl.setAttribute("y2", "170");
+    fl.setAttribute("stroke", "#777"); fl.setAttribute("stroke-width", "2.8");
+    fretsG.appendChild(fl);
+  }
+
+  [3, 5, 7, 9].forEach(f => {
+    const cx = (fretX[f] + fretX[f + 1]) / 2;
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", cx); c.setAttribute("cy", "95");
+    c.setAttribute("r", "5.5"); c.setAttribute("fill", "#ddd");
+    inlaysG.appendChild(c);
+  });
+
+  const sWidths = [1.2, 1.5, 1.8, 2.2, 2.6, 3.2];
+  for (let s = 1; s <= 6; s++) {
+    const y = 20 + (s - 1) * 30;
+    const sl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    sl.setAttribute("x1", fretX[1]); sl.setAttribute("y1", y);
+    sl.setAttribute("x2", fretX[10]); sl.setAttribute("y2", y);
+    sl.setAttribute("stroke-width", sWidths[s - 1]);
+    stringsG.appendChild(sl);
+  }
+
+  for (let f = 0; f <= 9; f++) {
+    const tx = getFretX(f);
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", tx); t.setAttribute("y", "198");
+    t.setAttribute("fill", "#333"); t.setAttribute("font-size", "13");
+    t.setAttribute("font-weight", "bold");
+    t.setAttribute("text-anchor", "middle");
+    t.textContent = f === 0 ? "0 лад" : `${f} лад`;
+    fLabelsG.appendChild(t);
+  }
+
+  const sNames = ["1 (e)", "2 (B)", "3 (G)", "4 (D)", "5 (A)", "6 (E)"];
+  sNames.forEach((name, i) => {
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", "-40"); t.setAttribute("y", 24 + i * 30);
+    t.textContent = name;
+    sLabelsG.appendChild(t);
+  });
+}
+
+buildFretboard();
+
+let curMode = 1;
+let currentSeq = buildSequence(1);
+let currentChordName = "";
+let actx = null;
+let tm = null;
+let playCursor = 0;
+let isPlaying = false;
+let isPaused = false;
+let loop = false;
+
+function playAcousticGuitar(s, f, durSec) {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === "suspended") actx.resume();
+
+  const freq = openFreqs[s - 1] * Math.pow(2, f / 12);
+  const now = actx.currentTime;
+
+  const osc1 = actx.createOscillator();
+  osc1.type = "triangle";
+  osc1.frequency.setValueAtTime(freq, now);
+
+  const osc2 = actx.createOscillator();
+  osc2.type = "sawtooth";
+  osc2.frequency.setValueAtTime(freq * 2, now);
+
+  const filter = actx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(2600, now);
+  filter.frequency.exponentialRampToValueAtTime(320, now + durSec);
+
+  const gain = actx.createGain();
+  const osc2Gain = actx.createGain();
+  osc2Gain.gain.setValueAtTime(0.18, now);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.42, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+  osc1.connect(gain);
+  osc2.connect(osc2Gain);
+  osc2Gain.connect(gain);
+  gain.connect(filter);
+  filter.connect(actx.destination);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + durSec);
+  osc2.stop(now + durSec);
+}
+
+function renderChordFretboard(chordName, chordObj) {
+  if (currentChordName === chordName) return;
+  currentChordName = chordName;
+
+  document.getElementById("fretTitle").textContent = `Аппликатура аккорда: ${chordName}`;
+  const dotsG = document.getElementById("dots");
+  dotsG.innerHTML = "";
+
+  for (let s = 1; s <= 6; s++) {
+    const f = chordObj[s];
+    if (f === null || f === undefined) continue;
+
+    const cx = getFretX(f);
+    const cy = 20 + (s - 1) * 30;
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("id", `f-${s}-${f}`);
+    circle.setAttribute("cx", cx); circle.setAttribute("cy", cy); circle.setAttribute("r", "10");
+    circle.setAttribute("fill", f === 0 ? "white" : "#ff5252");
+    circle.setAttribute("stroke", "#333"); circle.setAttribute("stroke-width", "2");
+    g.appendChild(circle);
+
+    if (f > 0) {
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", cx); text.setAttribute("y", cy + 4);
+      text.setAttribute("fill", "white"); text.setAttribute("font-size", "11");
+      text.setAttribute("font-weight", "bold"); text.setAttribute("text-anchor", "middle");
+      text.textContent = f;
+      g.appendChild(text);
+    }
+    dotsG.appendChild(g);
+  }
+}
+
+function renderTab() {
+  const grp = document.getElementById("tab-render");
+  grp.innerHTML = "";
+
+  const startX = 20;
+  const stepX = (940 / currentSeq.length);
+
+  currentSeq.forEach((st, i) => {
+    const x = startX + i * stepX;
+    const tabY = 15 + (st.s - 1) * 15;
+
+    if (i === 12 || i === 24 || i === 36 || i === 42) {
+      const bar = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      bar.setAttribute("x1", x - (stepX / 2)); bar.setAttribute("x2", x - (stepX / 2));
+      bar.setAttribute("y1", 10); bar.setAttribute("y2", 95);
+      bar.setAttribute("stroke", "#4a69bd"); bar.setAttribute("stroke-width", "2");
+      grp.appendChild(bar);
+    }
+
+    if (i === 0 || i === 12 || i === 24 || i === 36 || i === 42) {
+      const chordLbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      chordLbl.setAttribute("x", x); chordLbl.setAttribute("y", 4);
+      chordLbl.setAttribute("fill", "#ff5252"); chordLbl.setAttribute("font-size", "12");
+      chordLbl.setAttribute("font-weight", "bold");
+      chordLbl.textContent = st.chordName;
+      grp.appendChild(chordLbl);
+    }
+
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", x); t.setAttribute("y", tabY + 4);
+    t.setAttribute("text-anchor", "middle"); t.setAttribute("font-size", "11");
+    t.setAttribute("font-weight", "bold");
+    t.setAttribute("fill", "#444");
+    t.setAttribute("id", `tb-${i}`);
+    t.textContent = st.f;
+    grp.appendChild(t);
+  });
+}
+
+function clearActive() {
+  document.querySelectorAll(".active-fret, .active-tab").forEach(e => {
+    e.classList.remove("active-fret", "active-tab");
+  });
+}
+
+function pulse() {
+  if (playCursor >= currentSeq.length) {
+    if (loop) {
+      playCursor = 0;
+    } else {
+      stop();
+      return;
+    }
+  }
+
+  clearActive();
+  const cur = currentSeq[playCursor];
+
+  renderChordFretboard(cur.chordName, cur.chordObj);
+
+  const fEl = document.getElementById(`f-${cur.s}-${cur.f}`);
+  if (fEl) fEl.classList.add("active-fret");
+
+  const tEl = document.getElementById(`tb-${playCursor}`);
+  if (tEl) tEl.classList.add("active-tab");
+
+  document.getElementById("status").textContent = `${cur.chordName} • ${cur.s}-я струна (${cur.f} лад)`;
+
+  playAcousticGuitar(cur.s, cur.f, 0.65);
+  playCursor++;
+
+  const ms = parseInt(document.getElementById("speed").value);
+  tm = setTimeout(pulse, ms);
+}
+
+function play() {
+  if (isPlaying && !isPaused) return;
+  isPlaying = true;
+  isPaused = false;
+  document.getElementById("status").textContent = `Воспроизведение (Режим ${curMode})...`;
+  pulse();
+}
+
+function pause() {
+  if (!isPlaying || isPaused) return;
+  clearTimeout(tm);
+  tm = null;
+  isPaused = true;
+  document.getElementById("status").textContent = "Пауза";
+}
+
+function stop() {
+  clearTimeout(tm);
+  tm = null;
+  isPlaying = false;
+  isPaused = false;
+  playCursor = 0;
+  clearActive();
+  document.getElementById("status").textContent = `Остановлено (Режим ${curMode})`;
+}
+
+function setMode(m) {
+  stop();
+  curMode = m;
+  document.querySelectorAll(".btn-mode").forEach((btn, i) => btn.classList.toggle("active", i + 1 === m));
+  currentSeq = buildSequence(m);
+  currentChordName = "";
+  renderChordFretboard(currentSeq[0].chordName, currentSeq[0].chordObj);
+  renderTab();
+  document.getElementById("status").textContent = `Режим ${m} готов к игре`;
+}
+
+document.getElementById("playBtn").onclick = play;
+document.getElementById("pauseBtn").onclick = pause;
+document.getElementById("stopBtn").onclick = stop;
+
+document.getElementById("loopBtn").onclick = function() {
+  loop = !loop;
+  this.classList.toggle("active", loop);
+  this.textContent = loop ? "🔁 Повтор: Вкл" : "🔁 Повтор: Выкл";
+};
+
+document.getElementById("speed").oninput = (e) => {
+  document.getElementById("msVal").textContent = e.target.value;
+};
+
+document.getElementById("mode1Btn").onclick = () => setMode(1);
+document.getElementById("mode2Btn").onclick = () => setMode(2);
+
+setMode(1);
+</script>
+
+</body></html>

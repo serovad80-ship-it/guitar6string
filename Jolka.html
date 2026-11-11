@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Users/serov/Desktop/elochka_master_trainer.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Маленькой ёлочке холодно зимой — Мастер-тренажёр</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #1e1e24;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    margin: 0;
+  }
+  h2 { margin: 0 0 10px 0; color: #ff5252; }
+  .level-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-lvl {
+    background: #2b2b36;
+    color: #bbb;
+    border: 2px solid #444;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-lvl:hover { border-color: #ff5252; color: #fff; }
+  .btn-lvl.active { background: #ff5252; color: #fff; border-color: #ff5252; box-shadow: 0 0 10px rgba(255,82,82,0.5); }
+  .controls {
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #2b2b36;
+    padding: 8px 18px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-act {
+    background: #ff5252;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-act:hover { background: #ff7676; }
+  .btn-pause { background: #f39c12; }
+  .btn-pause:hover { background: #f1c40f; }
+  .btn-stop { background: #555; }
+  .btn-stop:hover { background: #777; }
+  .btn-loop.active { background: #00e676; color: #111; }
+  .diagram-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 20px 24px 20px;
+    max-width: 1140px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .active-fret { fill: #00e676 !important; stroke: #00b34a !important; filter: drop-shadow(0 0 8px #00e676); }
+  .tab-board {
+    background: #1a1a20;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 25px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    line-height: 1.35;
+    color: #777;
+    user-select: none;
+    overflow-x: auto;
+  }
+  .tab-block { margin-bottom: 14px; }
+  .t-char { display: inline-block; width: 10px; text-align: center; }
+  .t-note { font-weight: bold; color: #fff; }
+  .t-note.active { color: #111 !important; background: #00e676; border-radius: 3px; }
+  .info-bar { font-size: 15px; font-weight: bold; color: #00e676; min-width: 250px; text-align: center; }
+</style>
+</head>
+<body>
+
+  <h2>«Маленькой ёлочке холодно зимой»</h2>
+
+  <div class="level-controls">
+    <button class="btn-lvl" id="lvl1Btn">Уровень 1</button>
+    <button class="btn-lvl" id="lvl2Btn">Уровень 2</button>
+    <button class="btn-lvl" id="lvl3Btn">Уровень 3</button>
+    <button class="btn-lvl" id="lvl4Btn">Уровень 4</button>
+    <button class="btn-lvl" id="lvl5Btn">Уровень 5</button>
+    <button class="btn-lvl active" id="lvl6Btn">Уровень 6</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn-act" id="playBtn">▶ Проиграть</button>
+    <button class="btn-act btn-pause" id="pauseBtn">⏸ Пауза</button>
+    <button class="btn-act btn-stop" id="stopBtn">⏹ Стоп</button>
+    <button class="btn-act btn-loop" id="loopBtn">🔁 Повтор: Выкл</button>
+    <label>Темп (мс): <input type="range" id="speed" min="50" max="220" value="110"> <span id="msVal">110</span> мс</label>
+    <div class="info-bar" id="status">Остановлено (Ур. 6)</div>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 1060 220" width="100%">
+      <g transform="translate(60, 10)">
+        <g id="frets"><line x1="65" y1="20" x2="65" y2="170" stroke="#111" stroke-width="6"></line><line x1="167.22222222222223" y1="20" x2="167.22222222222223" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="269.44444444444446" y1="20" x2="269.44444444444446" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="371.6666666666667" y1="20" x2="371.6666666666667" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="473.8888888888889" y1="20" x2="473.8888888888889" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="576.1111111111111" y1="20" x2="576.1111111111111" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="678.3333333333334" y1="20" x2="678.3333333333334" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="780.5555555555557" y1="20" x2="780.5555555555557" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="882.7777777777778" y1="20" x2="882.7777777777778" y2="170" stroke="#777" stroke-width="2.8"></line><line x1="985" y1="20" x2="985" y2="170" stroke="#777" stroke-width="2.8"></line></g>
+        <g id="inlays"><circle cx="320.55555555555554" cy="95" r="5.5" fill="#ddd"></circle><circle cx="525" cy="95" r="5.5" fill="#ddd"></circle><circle cx="729.4444444444446" cy="95" r="5.5" fill="#ddd"></circle></g>
+        <g id="strings" stroke="#555"><line x1="65" y1="20" x2="985" y2="20" stroke-width="1.2"></line><line x1="65" y1="50" x2="985" y2="50" stroke-width="1.5"></line><line x1="65" y1="80" x2="985" y2="80" stroke-width="1.8"></line><line x1="65" y1="110" x2="985" y2="110" stroke-width="2.2"></line><line x1="65" y1="140" x2="985" y2="140" stroke-width="2.6"></line><line x1="65" y1="170" x2="985" y2="170" stroke-width="3.2"></line></g>
+        <g id="fret-labels"><text x="30" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">0 лад</text><text x="116.11111111111111" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">1 лад</text><text x="218.33333333333334" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">2 лад</text><text x="320.55555555555554" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">3 лад</text><text x="422.7777777777778" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">4 лад</text><text x="525" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">5 лад</text><text x="627.2222222222222" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">6 лад</text><text x="729.4444444444446" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">7 лад</text><text x="831.6666666666667" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">8 лад</text><text x="933.8888888888889" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">9 лад</text></g>
+        <g id="string-labels" fill="#333" font-weight="bold" font-size="12"><text x="-40" y="24">1 (e)</text><text x="-40" y="54">2 (B)</text><text x="-40" y="84">3 (G)</text><text x="-40" y="114">4 (D)</text><text x="-40" y="144">5 (A)</text><text x="-40" y="174">6 (E)</text></g>
+        <g id="dots"><g><circle id="f-1-3" cx="320.55555555555554" cy="20" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="320.55555555555554" y="24" fill="white" font-size="11" font-weight="bold" text-anchor="middle">3</text></g><g><circle id="f-2-5" cx="525" cy="50" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="525" y="54" fill="white" font-size="11" font-weight="bold" text-anchor="middle">5</text></g><g><circle id="f-3-5" cx="525" cy="80" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="525" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle">5</text></g><g><circle id="f-4-5" cx="525" cy="110" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="525" y="114" fill="white" font-size="11" font-weight="bold" text-anchor="middle">5</text></g><g><circle id="f-5-3" cx="320.55555555555554" cy="140" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="320.55555555555554" y="144" fill="white" font-size="11" font-weight="bold" text-anchor="middle">3</text></g><g><circle id="f-6-3" cx="320.55555555555554" cy="170" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="320.55555555555554" y="174" fill="white" font-size="11" font-weight="bold" text-anchor="middle">3</text></g><g><circle id="f-2-3" cx="320.55555555555554" cy="50" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="320.55555555555554" y="54" fill="white" font-size="11" font-weight="bold" text-anchor="middle">3</text></g><g><circle id="f-3-4" cx="422.7777777777778" cy="80" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="422.7777777777778" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle">4</text></g><g><circle id="f-5-5" cx="525" cy="140" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="525" y="144" fill="white" font-size="11" font-weight="bold" text-anchor="middle">5</text></g><g><circle id="f-2-6" cx="627.2222222222222" cy="50" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="627.2222222222222" y="54" fill="white" font-size="11" font-weight="bold" text-anchor="middle">6</text></g><g><circle id="f-3-3" cx="320.55555555555554" cy="80" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="320.55555555555554" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle">3</text></g><g><circle id="f-1-5" cx="525" cy="20" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="525" y="24" fill="white" font-size="11" font-weight="bold" text-anchor="middle">5</text></g><g><circle id="f-1-8" cx="831.6666666666667" cy="20" r="10" fill="#ff5252" stroke="#333" stroke-width="2" class=""></circle><text x="831.6666666666667" y="24" fill="white" font-size="11" font-weight="bold" text-anchor="middle">8</text></g></g>
+      </g>
+    </svg>
+
+    <div class="tab-board" id="tabBoard"><div class="tab-block"><div><span class="t-char">e</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-36-1">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-40-1">8</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-42-1">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-69-1">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-73-1">8</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-75-1">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">B</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-2">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-7-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-9-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-2">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-17-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-2">3</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-21-2">6</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-23-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-25-2">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-36-2">6</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-2">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-48-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-50-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-2">3</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-54-2">6</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-56-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-58-2">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-69-2">6</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-2">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-81-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-83-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-2">3</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-87-2">6</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-89-2">5</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-91-2">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">G</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-3">4</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-27-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-3">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-36-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-3">4</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-60-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-64-3">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-69-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-3">4</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-93-3">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">D</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-27-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-60-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-93-4">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">A</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-5">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-27-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-5">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-60-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-5">5</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-93-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-27-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-44-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-52-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-60-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-77-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-85-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-93-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div></div></div>
+  </div>
+
+<script>
+const levels = {
+  1: [
+    [
+      "e||3---0-0-3---0-0-3-1-0-----------|5---8-5-3---0-0-3-1-0-----------|5---8-5-3---0-0-3-1-0-----------|",
+      "B||----------------------3-1-------|----------------------3-1-------|----------------------3-1-------|"
+    ]
+  ],
+  2: [
+    [
+      "E||--------------------------------|--------------------------------|--------------------------------|",
+      "B||--------------------------------|----1---------------------------|----1---------------------------|",
+      "G||0-------0-------0---------------|2-----2-0-------0---------------|2-----2-0-------0---------------|",
+      "D||----2-2-----2-2---3-2-0-2-------|------------2-2---3-2-0-2-------|------------2-2---3-2-0-2-------|",
+      "A||3-------3-------2-------3-------|3-------3-------2-------3-------|3-------3-------2-------3-------|",
+      "E||--------------------------------|--------------------------------|--------------------------------|"
+    ]
+  ],
+  3: [
+    [
+      "E||--------------------------------|--------------------------------|--------------------------------|",
+      "B||--------------------------------|--------------------------------|--------------------------------|",
+      "G||--------------------------------|----5---------------------------|----5---------------------------|",
+      "D||5-------5-------5---------------|7-----7-5-------5---------------|7-----7-5-------5---------------|",
+      "D||----7-7-----7-7---8-7-5---------|------------7-7---8-7-5---------|------------7-7---8-7-5---------|",
+      "E||------------------------8-------|------------------------8-------|------------------------8-------|"
+    ]
+  ],
+  4: [
+    [
+      "E||--------------------------------|--------------------------------|--------------------------------|",
+      "B||--------------------------------|--------------------------------|--------------------------------|",
+      "G||0-------0-------0---------------|----5---------------------------|----5---------------------------|",
+      "D||--------------------------------|7-----7-5-------5---------------|7-----7-5-------5---------------|",
+      "A||----7-7-----7-7---8-7-5---------|------------7-7---8-7-5---------|------------7-7---8-7-5---------|",
+      "E||------------------------8-------|------------------------8-------|------------------------8-------|"
+    ]
+  ],
+  5: [
+    [
+      "e||--------------------------------|1-------------------------------|1-------------------------------|",
+      "B||--------------------------------|1---1---------------------------|1---1---------------------------|",
+      "G||0-------0-------0---------------|2-----2-0-------0---------------|2-----2-0-------0---------------|",
+      "D||2---2-2-2---2-2-0-3-2-0---------|3-------2---2-2-0-3-2-0---------|3-------2---2-2-0-3-2-0---------|",
+      "A||3-------3-------2-------3---1---|3-------3-------2-------3---1---|3-------3-------2-------3-------|",
+      "E||0-------0-------0-------0-------|1-------0-------3-------0-------|1-------0-------3-------0-------|"
+    ]
+  ],
+  6: [
+    [
+      "e||3-------3-------3---------------|5---8-5-3-------3---------------|5---8-5-3-------3---------------|",
+      "B||5---5-5-5---5-5-3-6-5-3---------|6-------5---5-5-3-6-5-3---------|6-------5---5-5-3-6-5-3---------|",
+      "G||5-------5-------4-------5---3---|5-------5-------4-------5---3---|5-------5-------4-------5-------|",
+      "D||5-------5-------5-------5-------|--------5-------5-------5-------|--------5-------5-------5-------|",
+      "A||3-------3-------5-------3-------|--------3-------5-------3-------|--------3-------5-------3-------|",
+      "E||3-------3-------3-------3-------|--------3-------3-------3-------|--------3-------3-------3-------|"
+    ]
+  ]
+};
+
+function getStrNum(lineIdx, totalRows) {
+  if (totalRows === 2) return lineIdx === 0 ? 1 : 2;
+  return lineIdx + 1;
+}
+
+const fretX = [30];
+const nutX = 65;
+fretX.push(nutX);
+const totalFretWidth = 920;
+for (let i = 1; i <= 9; i++) {
+  fretX.push(nutX + (i * (totalFretWidth / 9)));
+}
+
+function getFretX(f) {
+  if (f === 0) return 30;
+  return (fretX[f] + fretX[f + 1]) / 2;
+}
+
+function buildFretboard() {
+  const fretsG = document.getElementById("frets");
+  const inlaysG = document.getElementById("inlays");
+  const stringsG = document.getElementById("strings");
+  const fLabelsG = document.getElementById("fret-labels");
+  const sLabelsG = document.getElementById("string-labels");
+
+  fretsG.innerHTML = ""; inlaysG.innerHTML = ""; stringsG.innerHTML = "";
+  fLabelsG.innerHTML = ""; sLabelsG.innerHTML = "";
+
+  const nut = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  nut.setAttribute("x1", fretX[1]); nut.setAttribute("y1", "20");
+  nut.setAttribute("x2", fretX[1]); nut.setAttribute("y2", "170");
+  nut.setAttribute("stroke", "#111"); nut.setAttribute("stroke-width", "6");
+  fretsG.appendChild(nut);
+
+  for (let i = 2; i <= 10; i++) {
+    const fl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    fl.setAttribute("x1", fretX[i]); fl.setAttribute("y1", "20");
+    fl.setAttribute("x2", fretX[i]); fl.setAttribute("y2", "170");
+    fl.setAttribute("stroke", "#777"); fl.setAttribute("stroke-width", "2.8");
+    fretsG.appendChild(fl);
+  }
+
+  [3, 5, 7].forEach(f => {
+    const cx = (fretX[f] + fretX[f + 1]) / 2;
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", cx); c.setAttribute("cy", "95");
+    c.setAttribute("r", "5.5"); c.setAttribute("fill", "#ddd");
+    inlaysG.appendChild(c);
+  });
+
+  const sWidths = [1.2, 1.5, 1.8, 2.2, 2.6, 3.2];
+  for (let s = 1; s <= 6; s++) {
+    const y = 20 + (s - 1) * 30;
+    const sl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    sl.setAttribute("x1", fretX[1]); sl.setAttribute("y1", y);
+    sl.setAttribute("x2", fretX[10]); sl.setAttribute("y2", y);
+    sl.setAttribute("stroke-width", sWidths[s - 1]);
+    stringsG.appendChild(sl);
+  }
+
+  for (let f = 0; f <= 9; f++) {
+    const tx = getFretX(f);
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", tx); t.setAttribute("y", "198");
+    t.setAttribute("fill", "#333"); t.setAttribute("font-size", "13");
+    t.setAttribute("font-weight", "bold");
+    t.setAttribute("text-anchor", "middle");
+    t.textContent = f === 0 ? "0 лад" : `${f} лад`;
+    fLabelsG.appendChild(t);
+  }
+
+  const sNames = ["1 (e)", "2 (B)", "3 (G)", "4 (D)", "5 (A)", "6 (E)"];
+  sNames.forEach((name, i) => {
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", "-40"); t.setAttribute("y", 24 + i * 30);
+    t.textContent = name;
+    sLabelsG.appendChild(t);
+  });
+}
+
+buildFretboard();
+
+let curLvl = 1;
+let globalTimeline = [];
+const boardEl = document.getElementById("tabBoard");
+const dotsG = document.getElementById("dots");
+
+function loadLevel(lvl) {
+  stop();
+  curLvl = lvl;
+  globalTimeline = [];
+  boardEl.innerHTML = "";
+  dotsG.innerHTML = "";
+
+  const data = levels[lvl];
+  const activeDotsMap = new Set();
+
+  data.forEach((block, bIdx) => {
+    const blockDiv = document.createElement("div");
+    blockDiv.className = "tab-block";
+
+    const rows = block.map((line, lIdx) => ({
+      sName: line.substr(0, 1),
+      sNum: getStrNum(lIdx, block.length),
+      line: line,
+      el: document.createElement("div")
+    }));
+
+    const len = block[0].length;
+    for (let i = 0; i < len; i++) {
+      rows.forEach(r => {
+        const ch = r.line[i];
+        const span = document.createElement("span");
+        span.className = "t-char";
+        span.textContent = ch;
+        if (ch >= '0' && ch <= '9') {
+          span.className = "t-char t-note";
+          span.id = `nt-${bIdx}-${i}-${r.sNum}`;
+        }
+        r.el.appendChild(span);
+      });
+    }
+
+    rows.forEach(r => blockDiv.appendChild(r.el));
+    boardEl.appendChild(blockDiv);
+
+    for (let c = 3; c < len; c++) {
+      let isBarLine = false;
+      rows.forEach(r => {
+        if (r.line[c] === '|') isBarLine = true;
+      });
+      if (isBarLine) continue;
+
+      const notesInColumn = [];
+      rows.forEach(r => {
+        const ch = r.line[c];
+        if (ch >= '0' && ch <= '9') {
+          const fret = parseInt(ch);
+          activeDotsMap.add(`${r.sNum}-${fret}`);
+          notesInColumn.push({
+            s: r.sNum,
+            f: fret,
+            domId: `nt-${bIdx}-${c}-${r.sNum}`,
+            sName: r.sName,
+            block: bIdx + 1
+          });
+        }
+      });
+
+      globalTimeline.push({
+        charIndex: c,
+        blockIndex: bIdx,
+        notes: notesInColumn
+      });
+    }
+  });
+
+  activeDotsMap.forEach(key => {
+    const [s, f] = key.split("-").map(Number);
+    const cx = getFretX(f);
+    const cy = 20 + (s - 1) * 30;
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("id", `f-${s}-${f}`);
+    circle.setAttribute("cx", cx);
+    circle.setAttribute("cy", cy);
+    circle.setAttribute("r", "10");
+    circle.setAttribute("fill", f === 0 ? "white" : "#ff5252");
+    circle.setAttribute("stroke", "#333");
+    circle.setAttribute("stroke-width", "2");
+    g.appendChild(circle);
+
+    if (f > 0) {
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", cx);
+      text.setAttribute("y", cy + 4);
+      text.setAttribute("fill", "white");
+      text.setAttribute("font-size", "11");
+      text.setAttribute("font-weight", "bold");
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = f;
+      g.appendChild(text);
+    }
+    dotsG.appendChild(g);
+  });
+
+  document.getElementById("status").textContent = `Уровень ${lvl} готов`;
+}
+
+const openFreqs = [329.63, 246.94, 196.00, 146.83, 110.00, 82.41];
+let actx = null;
+
+function playAcousticGuitar(s, f, durSec) {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === "suspended") actx.resume();
+
+  const freq = openFreqs[s - 1] * Math.pow(2, f / 12);
+  const now = actx.currentTime;
+
+  const osc1 = actx.createOscillator();
+  osc1.type = "triangle";
+  osc1.frequency.setValueAtTime(freq, now);
+
+  const osc2 = actx.createOscillator();
+  osc2.type = "sawtooth";
+  osc2.frequency.setValueAtTime(freq * 2, now);
+
+  const filter = actx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(2600, now);
+  filter.frequency.exponentialRampToValueAtTime(320, now + durSec);
+
+  const gain = actx.createGain();
+  const osc2Gain = actx.createGain();
+  osc2Gain.gain.setValueAtTime(0.18, now);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.42, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+  osc1.connect(gain);
+  osc2.connect(osc2Gain);
+  osc2Gain.connect(gain);
+  gain.connect(filter);
+  filter.connect(actx.destination);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + durSec);
+  osc2.stop(now + durSec);
+}
+
+let tm = null;
+let playCursor = 0;
+let isPlaying = false;
+let isPaused = false;
+let loop = false;
+
+function clearActive() {
+  document.querySelectorAll(".active-fret, .t-note.active").forEach(e => {
+    e.classList.remove("active-fret", "active");
+  });
+}
+
+function pulse() {
+  if (playCursor >= globalTimeline.length) {
+    if (loop) {
+      playCursor = 0;
+    } else {
+      stop();
+      return;
+    }
+  }
+
+  const slot = globalTimeline[playCursor];
+
+  if (slot.notes.length > 0) {
+    clearActive();
+    const infoParts = [];
+    const dur = slot.notes.length > 2 ? 0.75 : 0.55;
+
+    slot.notes.forEach(n => {
+      const fEl = document.getElementById(`f-${n.s}-${n.f}`);
+      if (fEl) fEl.classList.add("active-fret");
+
+      const tEl = document.getElementById(n.domId);
+      if (tEl) tEl.classList.add("active");
+
+      playAcousticGuitar(n.s, n.f, dur);
+      infoParts.push(`${n.s}:${n.f}`);
+    });
+
+    document.getElementById("status").textContent = `Уровень ${curLvl}: [ ${infoParts.join(" + ")} ]`;
+  }
+
+  playCursor++;
+  const ms = parseInt(document.getElementById("speed").value);
+  tm = setTimeout(pulse, ms);
+}
+
+function play() {
+  if (isPlaying && !isPaused) return;
+  isPlaying = true;
+  isPaused = false;
+  document.getElementById("status").textContent = `Воспроизведение (Ур. ${curLvl})`;
+  pulse();
+}
+
+function pause() {
+  if (!isPlaying || isPaused) return;
+  clearTimeout(tm);
+  tm = null;
+  isPaused = true;
+  document.getElementById("status").textContent = "Пауза";
+}
+
+function stop() {
+  clearTimeout(tm);
+  tm = null;
+  isPlaying = false;
+  isPaused = false;
+  playCursor = 0;
+  clearActive();
+  document.getElementById("status").textContent = `Остановлено (Ур. ${curLvl})`;
+}
+
+document.getElementById("playBtn").onclick = play;
+document.getElementById("pauseBtn").onclick = pause;
+document.getElementById("stopBtn").onclick = stop;
+
+document.getElementById("loopBtn").onclick = function() {
+  loop = !loop;
+  this.classList.toggle("active", loop);
+  this.textContent = loop ? "🔁 Повтор: Вкл" : "🔁 Повтор: Выкл";
+};
+
+document.getElementById("speed").oninput = (e) => {
+  document.getElementById("msVal").textContent = e.target.value;
+};
+
+function switchLevel(lvl, btn) {
+  document.querySelectorAll(".btn-lvl").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  loadLevel(lvl);
+}
+
+document.getElementById("lvl1Btn").onclick = function() { switchLevel(1, this); };
+document.getElementById("lvl2Btn").onclick = function() { switchLevel(2, this); };
+document.getElementById("lvl3Btn").onclick = function() { switchLevel(3, this); };
+document.getElementById("lvl4Btn").onclick = function() { switchLevel(4, this); };
+document.getElementById("lvl5Btn").onclick = function() { switchLevel(5, this); };
+document.getElementById("lvl6Btn").onclick = function() { switchLevel(6, this); };
+
+loadLevel(1);
+</script>
+
+</body></html>

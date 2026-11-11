@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///C:/Users/serov/Desktop/kuznechik_master_trainer.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>В траве сидел кузнечик — Мастер-тренажёр</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #1e1e24;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    margin: 0;
+  }
+  h2 { margin: 0 0 10px 0; color: #ff5252; }
+  .level-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .btn-lvl {
+    background: #2b2b36;
+    color: #bbb;
+    border: 2px solid #444;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-lvl:hover { border-color: #ff5252; color: #fff; }
+  .btn-lvl.active { background: #ff5252; color: #fff; border-color: #ff5252; box-shadow: 0 0 10px rgba(255,82,82,0.5); }
+  
+  .controls {
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #2b2b36;
+    padding: 8px 18px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-act {
+    background: #ff5252;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-act:hover { background: #ff7676; }
+  .btn-pause { background: #f39c12; }
+  .btn-pause:hover { background: #f1c40f; }
+  .btn-stop { background: #555; }
+  .btn-stop:hover { background: #777; }
+  .btn-loop.active { background: #00e676; color: #111; }
+  
+  .diagram-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 20px 24px 20px;
+    max-width: 1080px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .active-fret { fill: #00e676 !important; stroke: #00b34a !important; filter: drop-shadow(0 0 8px #00e676); }
+  .tab-board {
+    background: #1a1a20;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 25px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 15px;
+    line-height: 1.35;
+    color: #777;
+    user-select: none;
+    overflow-x: auto;
+  }
+  .tab-block { margin-bottom: 14px; }
+  .t-char { display: inline-block; width: 11px; text-align: center; }
+  .t-note { font-weight: bold; color: #fff; }
+  .t-note.active { color: #111 !important; background: #00e676; border-radius: 3px; }
+  .info-bar { font-size: 15px; font-weight: bold; color: #00e676; min-width: 220px; text-align: center; }
+</style>
+</head>
+<body>
+
+  <h2>«В траве сидел кузнечик»</h2>
+
+  <div class="level-controls">
+    <button class="btn-lvl" id="lvl1Btn">Уровень 1</button>
+    <button class="btn-lvl" id="lvl2Btn">Уровень 2</button>
+    <button class="btn-lvl active" id="lvl3Btn">Уровень 3</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn-act" id="playBtn">▶ Проиграть</button>
+    <button class="btn-act btn-pause" id="pauseBtn">⏸ Пауза</button>
+    <button class="btn-act btn-stop" id="stopBtn">⏹ Стоп</button>
+    <button class="btn-act btn-loop" id="loopBtn">🔁 Повтор: Выкл</button>
+    <label>Темп (мс): <input type="range" id="speed" min="40" max="180" value="95"> <span id="msVal">180</span> мс</label>
+    <div class="info-bar" id="status">Фраза 4: [ B:0 ]</div>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 940 220" width="100%">
+      <g transform="translate(60, 10)">
+        <line x1="80" y1="20" x2="80" y2="170" stroke="#111" stroke-width="5"></line>
+        <line x1="330" y1="20" x2="330" y2="170" stroke="#777" stroke-width="3"></line>
+        <line x1="580" y1="20" x2="580" y2="170" stroke="#777" stroke-width="3"></line>
+        <line x1="830" y1="20" x2="830" y2="170" stroke="#777" stroke-width="3"></line>
+
+        <text x="35" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">0 лад</text>
+        <text x="205" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">1 лад</text>
+        <text x="455" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">2 лад</text>
+        <text x="705" y="198" fill="#333" font-size="13" font-weight="bold" text-anchor="middle">3 лад</text>
+
+        <g stroke="#555">
+          <line x1="80" y1="20" x2="830" y2="20" stroke-width="1.2"></line>
+          <line x1="80" y1="50" x2="830" y2="50" stroke-width="1.5"></line>
+          <line x1="80" y1="80" x2="830" y2="80" stroke-width="1.8"></line>
+          <line x1="80" y1="110" x2="830" y2="110" stroke-width="2.2"></line>
+          <line x1="80" y1="140" x2="830" y2="140" stroke-width="2.6"></line>
+          <line x1="80" y1="170" x2="830" y2="170" stroke-width="3.2"></line>
+        </g>
+
+        <text x="10" y="24" fill="#333" font-weight="bold">1 (E)</text>
+        <text x="10" y="54" fill="#333" font-weight="bold">2 (B)</text>
+        <text x="10" y="84" fill="#333" font-weight="bold">3 (G)</text>
+        <text x="10" y="114" fill="#333" font-weight="bold">4 (D)</text>
+        <text x="10" y="144" fill="#333" font-weight="bold">5 (A)</text>
+        <text x="10" y="174" fill="#333" font-weight="bold">6 (E)</text>
+
+        <g id="dots">
+          <!-- 1 (E): 0, 3 -->
+          <circle id="f-1-0" cx="35" cy="20" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class=""></circle>
+          <circle id="f-1-3" cx="705" cy="20" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-1-3" x="705" y="24" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">3</text>
+
+          <!-- 2 (B): 0, 1 -->
+          <circle id="f-2-0" cx="35" cy="50" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class="active-fret"></circle>
+          <circle id="f-2-1" cx="205" cy="50" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-2-1" x="205" y="54" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">1</text>
+
+          <!-- 3 (G): 0, 1, 2 -->
+          <circle id="f-3-0" cx="35" cy="80" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class=""></circle>
+          <circle id="f-3-1" cx="205" cy="80" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-3-1" x="205" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">1</text>
+          <circle id="f-3-2" cx="455" cy="80" r="10" fill="#111" style="display: inline;" class=""></circle>
+          <text id="lbl-3-2" x="455" y="84" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">2</text>
+
+          <!-- 4 (D): 0, 2 -->
+          <circle id="f-4-0" cx="35" cy="110" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class=""></circle>
+          <circle id="f-4-2" cx="455" cy="110" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-4-2" x="455" y="114" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">2</text>
+
+          <!-- 5 (A): 0, 2, 3 -->
+          <circle id="f-5-0" cx="35" cy="140" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class=""></circle>
+          <circle id="f-5-2" cx="455" cy="140" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-5-2" x="455" y="144" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">2</text>
+          <circle id="f-5-3" cx="705" cy="140" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-5-3" x="705" y="144" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">3</text>
+
+          <!-- 6 (E): 0, 3 -->
+          <circle id="f-6-0" cx="35" cy="170" r="10" fill="white" stroke="#333" stroke-width="2" style="display: inline;" class=""></circle>
+          <circle id="f-6-3" cx="705" cy="170" r="10" fill="#ff5252" style="display: inline;" class=""></circle>
+          <text id="lbl-6-3" x="705" y="174" fill="white" font-size="11" font-weight="bold" text-anchor="middle" style="display: inline;">3</text>
+        </g>
+      </g>
+    </svg>
+
+    <div class="tab-board" id="tabBoard"><div class="tab-block"><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-1">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-1">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">B</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-2">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-2">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">G</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-0-3-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-7-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-11-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-3">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-19-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-23-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-27-3">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">D</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-5-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-9-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-4">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-21-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-25-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-4">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">A</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-5">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-5">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-5">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-13-6">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-15-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-29-6">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-0-31-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div></div><div class="tab-block"><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">B</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-2">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-2">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">G</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-1-3-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-7-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-11-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-19-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-23-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-27-3">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">D</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-5-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-9-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-21-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-25-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">A</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-5">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-13-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-1-29-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div></div><div class="tab-block"><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">B</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-7-2">0</span><span class="t-char t-note" id="nt-2-8-2">0</span><span class="t-char t-note" id="nt-2-9-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-11-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-15-2">1</span><span class="t-char t-note" id="nt-2-16-2">1</span><span class="t-char t-note" id="nt-2-17-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-19-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-23-2">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">G</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-2-3-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-3">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-3">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-25-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-27-3">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-29-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-31-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">D</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-7-4">0</span><span class="t-char t-note" id="nt-2-8-4">0</span><span class="t-char t-note" id="nt-2-9-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-11-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-4">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-15-4">2</span><span class="t-char t-note" id="nt-2-16-4">2</span><span class="t-char t-note" id="nt-2-17-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-29-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">A</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-29-5">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-5-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-13-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-21-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-2-29-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div></div><div class="tab-block"><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-1">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-1">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">B</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-7-2">0</span><span class="t-char t-note" id="nt-3-8-2">0</span><span class="t-char t-note" id="nt-3-9-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-11-2">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-15-2">1</span><span class="t-char t-note" id="nt-3-16-2">1</span><span class="t-char t-note" id="nt-3-17-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-19-2">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-2">0</span><span class="t-char">-</span><span class="t-char t-note active" id="nt-3-23-2">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">G</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char t-note" id="nt-3-3-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-3">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-3">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-3">1</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-25-3">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-27-3">1</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-29-3">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">D</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-7-4">0</span><span class="t-char t-note" id="nt-3-8-4">0</span><span class="t-char t-note" id="nt-3-9-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-11-4">0</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-4">2</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-15-4">2</span><span class="t-char t-note" id="nt-3-16-4">2</span><span class="t-char t-note" id="nt-3-17-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-29-4">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">A</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-5">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-5">2</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-29-5">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div><div><span class="t-char">E</span><span class="t-char">|</span><span class="t-char">|</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-5-6">3</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-13-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-21-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char t-note" id="nt-3-29-6">0</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">-</span><span class="t-char">|</span></div></div></div>
+  </div>
+
+<script>
+const levels = {
+  1: [
+    [
+      "G||2---2---2-1-1---1---1---1-2-2---|",
+      "D||--2---2-----------2---2---------|"
+    ],
+    [
+      "G||2---2---2-1-----1---1---1-2-----|",
+      "D||--2---2-----------2---2---------|"
+    ],
+    [
+      "B||--0-000-0-1-111-1-1-0-----------|",
+      "G||2---------------------2-1-2-2---|"
+    ],
+    [
+      "B||--0-000-0-1-111-1-1-0-----------|",
+      "G||2---------------------2-1-2-----|"
+    ]
+  ],
+  2: [
+    [
+      "G||2---2---2-1-1---1---1---1-2-2---|",
+      "D||--2---2---2-2-----2---2---2-2---|"
+    ],
+    [
+      "G||2---2---2-1-----1---1---1-2-----|",
+      "D||--2---2---2-------2---2---2-----|"
+    ],
+    [
+      "B||--0-000-0-1-111-1-1-0-----------|",
+      "G||2-0-000-0-0-000-------2-1-2-2---|",
+      "D||--0-000-0-2-222---0-------2-2---|"
+    ],
+    [
+      "B||--0-000-0-1-111-1-1-0-----------|",
+      "G||2-0-000-0-0-000-------2-1-2-----|",
+      "D||--0-000-0-2-222---0-------2-----|"
+    ]
+  ],
+  3: [
+    [
+      "E||----------0-0-------------0-0---|",
+      "B||----------0-0-------------1-1---|",
+      "G||2---2---2-1-1---1---1---1-2-2---|",
+      "D||--2---2---2-2-----2---2---2-2---|",
+      "A||----------2-2-------------0-0---|",
+      "E||----------0-0-------------0-0---|"
+    ],
+    [
+      "E||----------0---------------0-----|",
+      "B||----------0---------------1-----|",
+      "G||2---2---2-1-----1---1---1-2-----|",
+      "D||--2---2---2-------2---2---2-----|",
+      "A||----------2---------------0-----|",
+      "E||----------0---------------0-----|"
+    ],
+    [
+      "E||--3-------0-------0-------------|",
+      "B||--0-000-0-1-111-1-0-0-----------|",
+      "G||2-0-------0-------1---2-1-2-2---|",
+      "D||--0-000-0-2-222---2-------2-----|",
+      "A||--2-------3-------2-------0-----|",
+      "E||--3-------0-------0-------0-----|"
+    ],
+    [
+      "E||--3-------0-------0-------------|",
+      "B||--0-000-0-1-111-1-0-0-----------|",
+      "G||2-0-------0-------1---2-1-2-----|",
+      "D||--0-000-0-2-222---2-------2-----|",
+      "A||--2-------3-------2-------0-----|",
+      "E||--3-------0-------0-------0-----|"
+    ]
+  ]
+};
+
+function getStrNum(lineIdx, sName, totalRows) {
+  if (totalRows === 6) {
+    if (lineIdx === 0) return 1;
+    if (lineIdx === 5) return 6;
+  }
+  if (sName === "B") return 2;
+  if (sName === "G") return 3;
+  if (sName === "D") return 4;
+  if (sName === "A") return 5;
+  if (sName === "E") return 1;
+  return 1;
+}
+
+let curLvl = 1;
+let globalTimeline = [];
+const boardEl = document.getElementById("tabBoard");
+
+function loadLevel(lvl) {
+  stop();
+  curLvl = lvl;
+  globalTimeline = [];
+  boardEl.innerHTML = "";
+
+  const data = levels[lvl];
+  data.forEach((block, bIdx) => {
+    const blockDiv = document.createElement("div");
+    blockDiv.className = "tab-block";
+
+    const rows = block.map((line, lIdx) => {
+      const sName = line.substr(0, 1);
+      const sNum = getStrNum(lIdx, sName, block.length);
+      return {
+        sName: sName,
+        sNum: sNum,
+        line: line,
+        el: document.createElement("div")
+      };
+    });
+
+    const len = block[0].length;
+    for (let i = 0; i < len; i++) {
+      rows.forEach(r => {
+        const ch = r.line[i];
+        const span = document.createElement("span");
+        span.className = "t-char";
+        span.textContent = ch;
+        if (ch >= '0' && ch <= '9') {
+          span.className = "t-char t-note";
+          span.id = `nt-${bIdx}-${i}-${r.sNum}`;
+        }
+        r.el.appendChild(span);
+      });
+    }
+
+    rows.forEach(r => blockDiv.appendChild(r.el));
+    boardEl.appendChild(blockDiv);
+
+    for (let c = 3; c < len - 1; c++) {
+      const notesInColumn = [];
+      rows.forEach(r => {
+        const ch = r.line[c];
+        if (ch >= '0' && ch <= '9') {
+          notesInColumn.push({
+            s: r.sNum,
+            f: parseInt(ch),
+            domId: `nt-${bIdx}-${c}-${r.sNum}`,
+            sName: r.sName,
+            block: bIdx + 1
+          });
+        }
+      });
+
+      globalTimeline.push({
+        charIndex: c,
+        blockIndex: bIdx,
+        notes: notesInColumn
+      });
+    }
+  });
+
+  const usedDots = new Set();
+  globalTimeline.forEach(slot => {
+    slot.notes.forEach(n => usedDots.add(`${n.s}-${n.f}`));
+  });
+
+  document.querySelectorAll("#dots circle").forEach(c => {
+    const key = c.id.replace("f-", "");
+    const isUsed = usedDots.has(key);
+    c.style.display = isUsed ? "inline" : "none";
+    const lbl = document.getElementById("lbl-" + key);
+    if (lbl) lbl.style.display = isUsed ? "inline" : "none";
+  });
+
+  document.getElementById("status").textContent = `Уровень ${lvl} готов`;
+}
+
+const openFreqs = [329.63, 246.94, 196.00, 146.83, 110.00, 82.41];
+let actx = null;
+
+function playAcousticPluck(s, f, durSec) {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === "suspended") actx.resume();
+
+  const freq = openFreqs[s - 1] * Math.pow(2, f / 12);
+  const now = actx.currentTime;
+
+  const osc1 = actx.createOscillator();
+  osc1.type = "triangle";
+  osc1.frequency.setValueAtTime(freq, now);
+
+  const osc2 = actx.createOscillator();
+  osc2.type = "sawtooth";
+  osc2.frequency.setValueAtTime(freq * 2, now);
+
+  const filter = actx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(2800, now);
+  filter.frequency.exponentialRampToValueAtTime(350, now + durSec);
+
+  const gain = actx.createGain();
+  const osc2Gain = actx.createGain();
+  osc2Gain.gain.setValueAtTime(0.18, now);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(0.45, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+  osc1.connect(gain);
+  osc2.connect(osc2Gain);
+  osc2Gain.connect(gain);
+  gain.connect(filter);
+  filter.connect(actx.destination);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + durSec);
+  osc2.stop(now + durSec);
+}
+
+let tm = null;
+let playCursor = 0;
+let isPlaying = false;
+let isPaused = false;
+let loop = false;
+
+function clearActive() {
+  document.querySelectorAll(".active-fret, .t-note.active").forEach(e => {
+    e.classList.remove("active-fret", "active");
+  });
+}
+
+function pulse() {
+  if (playCursor >= globalTimeline.length) {
+    if (loop) {
+      playCursor = 0;
+    } else {
+      stop();
+      return;
+    }
+  }
+
+  const slot = globalTimeline[playCursor];
+
+  if (slot.notes.length > 0) {
+    clearActive();
+    const infoParts = [];
+    const dur = slot.notes.length > 2 ? 0.75 : 0.55;
+
+    slot.notes.forEach(n => {
+      const fEl = document.getElementById(`f-${n.s}-${n.f}`);
+      if (fEl) fEl.classList.add("active-fret");
+
+      const tEl = document.getElementById(n.domId);
+      if (tEl) tEl.classList.add("active");
+
+      playAcousticPluck(n.s, n.f, dur);
+      infoParts.push(`${n.sName}:${n.f}`);
+    });
+
+    document.getElementById("status").textContent = `Фраза ${slot.blockIndex + 1}: [ ${infoParts.join(" + ")} ]`;
+  }
+
+  playCursor++;
+  const ms = parseInt(document.getElementById("speed").value);
+  tm = setTimeout(pulse, ms);
+}
+
+function play() {
+  if (isPlaying && !isPaused) return;
+  isPlaying = true;
+  isPaused = false;
+  document.getElementById("status").textContent = `Воспроизведение (Ур. ${curLvl})`;
+  pulse();
+}
+
+function pause() {
+  if (!isPlaying || isPaused) return;
+  clearTimeout(tm);
+  tm = null;
+  isPaused = true;
+  document.getElementById("status").textContent = "Пауза";
+}
+
+function stop() {
+  clearTimeout(tm);
+  tm = null;
+  isPlaying = false;
+  isPaused = false;
+  playCursor = 0;
+  clearActive();
+  document.getElementById("status").textContent = `Остановлено (Ур. ${curLvl})`;
+}
+
+document.getElementById("playBtn").onclick = play;
+document.getElementById("pauseBtn").onclick = pause;
+document.getElementById("stopBtn").onclick = stop;
+
+document.getElementById("loopBtn").onclick = function() {
+  loop = !loop;
+  this.classList.toggle("active", loop);
+  this.textContent = loop ? "🔁 Повтор: Вкл" : "🔁 Повтор: Выкл";
+};
+
+document.getElementById("speed").oninput = (e) => {
+  document.getElementById("msVal").textContent = e.target.value;
+};
+
+function switchLevel(lvl, btn) {
+  document.querySelectorAll(".btn-lvl").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  loadLevel(lvl);
+}
+
+document.getElementById("lvl1Btn").onclick = function() { switchLevel(1, this); };
+document.getElementById("lvl2Btn").onclick = function() { switchLevel(2, this); };
+document.getElementById("lvl3Btn").onclick = function() { switchLevel(3, this); };
+
+loadLevel(1);
+</script>
+
+</body></html>
