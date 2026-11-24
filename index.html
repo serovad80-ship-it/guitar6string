@@ -1,9 +1,7 @@
-﻿$desktopPath = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), 'index.html')
-$html = @'
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0041)file:///C:/Users/serov/Desktop/index.html -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Клуб «Штрих» — Шестиструнная классическая гитара</title>
 <style>
@@ -97,6 +95,8 @@ $html = @'
   .card-7:hover { background: #fffbf0; }
   .card-8 { border-color: #81ecec; }
   .card-8:hover { background: #f0ffff; }
+  .card-9 { border-color: #f9ca24; }
+  .card-9:hover { background: #fffdf0; }
 
   .card-header {
     display: flex;
@@ -251,14 +251,21 @@ $html = @'
       <p class="card-desc">Русская народная мелодия с открытыми басами: тренируем одновременное звучание мелодии и басовой линии по графической табулатуре.</p>
       <div class="btn-link">Запустить тренажёр →</div>
     </a>
+
+    <!-- Упражнение 9 -->
+    <a class="card card-9" href="https://serovad80-ship-it.github.io/guitar6string/izgib.html" target="_blank" rel="noopener">
+      <div class="card-header">
+        <span class="icon">🎸</span>
+        <div class="card-title">Изгиб гитары жёлтой</div>
+      </div>
+      <p class="card-desc">Разбор перебором с басовой линией и подсветкой позиций на грифе и в табулатуре.</p>
+      <div class="btn-link">Запустить тренажёр →</div>
+    </a>
   </main>
 
   <footer>
     Клуб «Штрих» • Учись играть с удовольствием!
   </footer>
 
-</body>
-</html>
-'@
-[System.IO.File]::WriteAllText($desktopPath, $html, [System.Text.Encoding]::UTF8)
-Start-Process $desktopPath
+
+</body></html>
