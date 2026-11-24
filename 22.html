@@ -85,7 +85,7 @@
     <button class="btn-act btn-pause" id="pauseBtn">⏸ Пауза</button>
     <button class="btn-act btn-stop" id="stopBtn">⏹ Стоп</button>
     <button class="btn-act btn-loop" id="loopBtn">🔁 Повтор: Выкл</button>
-    <label>Темп (мс): <input type="range" id="speed" min="120" max="450" value="320"> <span id="msVal">120</span> мс</label>
+    <label>Темп (мс): <input type="range" id="speed" min="50" max="200" value="200"> <span id="msVal">127</span> мс</label>
     <div class="info-bar" id="status">Остановлено</div>
   </div>
 
@@ -113,7 +113,7 @@ const el = (tag, attrs, text) => {
   return node;
 };
 
-// Табулатура Этюда 22 (такты 1–6, 7–12, 13–16)
+// Табулатура «Этюд 22» (такты 1–6, 7–12, 13–16)
 const tabBlocks = [
   [
     "e||----------------|----------------|--------0---3---|1---0-----------|----------------|----0-----------|",
