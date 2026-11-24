@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿$desktopPath = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), 'index.html')
+$html = @'
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -93,6 +95,8 @@
   .card-6:hover { background: #fff5f5; }
   .card-7 { border-color: #fdcb6e; }
   .card-7:hover { background: #fffbf0; }
+  .card-8 { border-color: #81ecec; }
+  .card-8:hover { background: #f0ffff; }
 
   .card-header {
     display: flex;
@@ -237,6 +241,16 @@
       <p class="card-desc">Классический этюд в размере 4/4: отрабатываем плавное ведение мелодии по всем струнам, длительности и аккордовые созвучия.</p>
       <div class="btn-link">Запустить тренажёр →</div>
     </a>
+
+    <!-- Упражнение 8 -->
+    <a class="card card-8" href="https://serovad80-ship-it.github.io/guitar6string/vo_sadu.html" target="_blank" rel="noopener">
+      <div class="card-header">
+        <span class="icon">🌻</span>
+        <div class="card-title">Во саду ли, в огороде</div>
+      </div>
+      <p class="card-desc">Русская народная мелодия с открытыми басами: тренируем одновременное звучание мелодии и басовой линии по графической табулатуре.</p>
+      <div class="btn-link">Запустить тренажёр →</div>
+    </a>
   </main>
 
   <footer>
@@ -245,3 +259,6 @@
 
 </body>
 </html>
+'@
+[System.IO.File]::WriteAllText($desktopPath, $html, [System.Text.Encoding]::UTF8)
+Start-Process $desktopPath
